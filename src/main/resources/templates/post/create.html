@@ -1,0 +1,31 @@
+<div class="container">
+    <div class="card myCard">
+        <form id="gagForm" class="myForm" th:method="POST" enctype="multipart/form-data" th:action="@{/post/create}">
+            <h3>New Post: </h3>
+            <div class="input-field">
+                <label for="title">Title</label>
+                <input type="text" id="title" name="title">
+            </div>
+
+            <div class="input-field">
+                <label for="description">Description</label>
+                <input type="text" id="description" name="description">
+            </div>
+
+            <div class="input-field">
+                <label for="answer">Answer</label>
+                <input type="text" id="answer" name="answer">
+            </div>
+
+
+            <input name="file" type="file" class="dropify" data-allowed-file-extensions="jpg png jpeg gif webp" data-height="300">
+            <div id="previewBox">
+
+            </div>
+
+            <div class="button-holder d-flex justify-content-center">
+                <button id="gagBtn" type="submit" class="btn btn-secondary myBtn">Create Gag</button>
+            </div>
+        </form>
+    </div>
+</div>

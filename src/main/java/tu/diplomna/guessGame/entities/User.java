@@ -20,6 +20,8 @@ public class User implements UserDetails {
 
     private String email;
 
+    private String profilePicture;
+
     @ManyToMany(fetch = FetchType.EAGER,
             cascade = {
                     CascadeType.MERGE
@@ -33,6 +35,7 @@ public class User implements UserDetails {
 
     public User() {
         roles = new HashSet<>();
+        profilePicture = "https://s3.amazonaws.com/37assets/svn/1065-IMG_2529.jpg";
     }
 
     public User(String username, String password, String email) {
@@ -107,6 +110,14 @@ public class User implements UserDetails {
 
     public void setRoles(Set<Role> roles) {
         this.roles = roles;
+    }
+
+    public String getProfilePicture() {
+        return profilePicture;
+    }
+
+    public void setProfilePicture(String profilePicture) {
+        this.profilePicture = profilePicture;
     }
 
     @Override

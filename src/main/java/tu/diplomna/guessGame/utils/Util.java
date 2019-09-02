@@ -4,9 +4,12 @@ import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import java.net.URI;
 import java.security.Principal;
 
 public class Util {
+    public static final String DEFAULT_UPLOAD_DIR = "upload-dir";
+
     public static Object currentUser() {
         if (Util.isAnonymous()) {
             return null;

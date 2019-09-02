@@ -1,6 +1,7 @@
 package tu.diplomna.guessGame.config;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.boot.jdbc.DataSourceBuilder;
 import org.springframework.core.env.Environment;
 import org.springframework.security.crypto.encrypt.Encryptors;
@@ -15,16 +16,23 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.social.connect.ConnectionFactoryLocator;
+import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
+import tu.diplomna.guessGame.custom.PathProperty;
 
 import javax.inject.Inject;
 import javax.sql.DataSource;
 import javax.xml.crypto.Data;
 
+@EnableConfigurationProperties(PathProperty.class)
 @Configuration
-public class Config {
+public class Config extends WebMvcConfigurerAdapter {
 
     @Autowired
     private DataSource dataSource;
+
+    @Autowired
+    PathProperty pathProperty;
 
 
     @Bean
@@ -52,4 +60,12 @@ public class Config {
 
     @Inject
     Environment environment;
+
+    @Override
+    public void addResourceHandlers(ResourceHandlerRegistry registry) {
+        registry.addResourceHandler("/upload-dir/**").addResourceLocations(pathProperty.getPath());
+
+    }
+
+
 }

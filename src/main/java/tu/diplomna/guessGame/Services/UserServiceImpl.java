@@ -5,8 +5,11 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.ObjectError;
 import tu.diplomna.guessGame.entities.Role;
 import tu.diplomna.guessGame.entities.User;
+import tu.diplomna.guessGame.models.UserBindingModel;
 import tu.diplomna.guessGame.repositories.RoleRepository;
 import tu.diplomna.guessGame.repositories.UserRepository;
 
@@ -60,5 +63,25 @@ public class UserServiceImpl implements UserService {
         }
         throw new UsernameNotFoundException("User with username " + s + " not found!");
 
+    }
+
+    @Override
+    public boolean registerUser(UserBindingModel model, BindingResult errors) {
+        if(model.getUsername().equals("") || model.getEmail().equals("") || model.getPassword().equals("")){
+            return false;
+        }
+        Optional<UserDetails> optionalUser = userRepository.findByUsername(model.getUsername());
+
+        if(optionalUser.isPresent()){
+            errors.addError(new ObjectError("Username", "Username is already taken!"));
+            return false;
+        }
+        User user = new User();
+        user.setUsername(model.getUsername());
+        user.setPassword(encoder.encode(model.getPassword()));
+        user.setEmail(model.getEmail());
+
+        userRepository.save(user);
+        return true;
     }
 }
