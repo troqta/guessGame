@@ -154,6 +154,7 @@ public class PostServiceImpl implements PostService {
             return false;
         }
 
+
         if(!answer.equals(post.getAnswer())){
             return false;
         }
