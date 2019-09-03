@@ -140,7 +140,7 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
-    public boolean answerPost(int id) {
+    public boolean answerPost(int id, String answer) {
         if(Util.isAnonymous()){
             return false;
         }
@@ -151,6 +151,10 @@ public class PostServiceImpl implements PostService {
         Post post = optionalPost.get();
         User user = (User) Util.currentUser();
         if(post.getAnswers().contains(user) || user.getAnsweredPosts().contains(post)){
+            return false;
+        }
+
+        if(!answer.equals(post.getAnswer())){
             return false;
         }
         post.getAnswers().add(user);

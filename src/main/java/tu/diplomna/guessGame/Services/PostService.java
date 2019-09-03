@@ -17,7 +17,7 @@ public interface PostService {
 
     boolean deletePost(int id);
 
-    boolean answerPost(int id);
+    boolean answerPost(int id, String answer);
 
     boolean addComment(int id, CommentBindingModel model, BindingResult errors);
 
