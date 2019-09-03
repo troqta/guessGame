@@ -133,4 +133,52 @@ public class UserServiceImpl implements UserService {
 
         return changed;
     }
+
+    @Override
+    public boolean banUser(int id) {
+        if(Util.isAnonymous()){
+            return false;
+        }
+        User currentUser = (User) Util.currentUser();
+        if(!currentUser.isAdmin()){
+            return false;
+        }
+
+        Optional<User> optionalUser = userRepository.findById(id);
+
+        if(!optionalUser.isPresent()){
+            return false;
+        }
+        User user = optionalUser.get();
+
+        user.setEnabled(false);
+
+        userRepository.save(user);
+
+        return true;
+    }
+
+    @Override
+    public boolean unbanUser(int id) {
+        if(Util.isAnonymous()){
+            return false;
+        }
+        User currentUser = (User) Util.currentUser();
+        if(!currentUser.isAdmin()){
+            return false;
+        }
+
+        Optional<User> optionalUser = userRepository.findById(id);
+
+        if(!optionalUser.isPresent()){
+            return false;
+        }
+        User user = optionalUser.get();
+
+        user.setEnabled(true);
+
+        userRepository.save(user);
+
+        return true;
+    }
 }

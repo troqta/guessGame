@@ -14,4 +14,7 @@ public interface UserService extends UserDetailsService {
     boolean registerUser(UserBindingModel model, BindingResult errors);
 
     boolean updateUser(UserEditBindingModel model, BindingResult errors, MultipartFile file);
+
+    boolean banUser(int id);
+    boolean unbanUser(int id);
 }

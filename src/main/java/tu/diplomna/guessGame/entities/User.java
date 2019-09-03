@@ -23,6 +23,8 @@ public class User implements UserDetails {
 
     private String profilePicture;
 
+    private boolean enabled;
+
     @ManyToMany(fetch = FetchType.EAGER,
             cascade = {
                     CascadeType.MERGE
@@ -69,6 +71,7 @@ public class User implements UserDetails {
         likedPosts = new HashSet<>();
         answeredPosts = new HashSet<>();
         posts = new HashSet<>();
+        enabled = true;
         profilePicture = "https://s3.amazonaws.com/37assets/svn/1065-IMG_2529.jpg";
     }
 
@@ -80,6 +83,7 @@ public class User implements UserDetails {
         this.likedPosts = new HashSet<>();
         this.answeredPosts = new HashSet<>();
         this.posts = new HashSet<>();
+        this.enabled = true;
     }
 
     @Override
@@ -114,7 +118,11 @@ public class User implements UserDetails {
 
     @Override
     public boolean isEnabled() {
-        return true;
+        return this.enabled;
+    }
+
+    public void setEnabled(boolean enabled) {
+        this.enabled = enabled;
     }
 
     public int getId() {
@@ -214,6 +222,5 @@ public class User implements UserDetails {
                 .stream()
                 .anyMatch(authority -> authority.getAuthority().equals("ROLE_ADMIN"));
     }
-
 
 }
