@@ -1,5 +1,7 @@
 package tu.diplomna.guessGame.entities;
 
+import tu.diplomna.guessGame.utils.Util;
+
 import javax.persistence.*;
 import java.sql.Timestamp;
 import java.util.ArrayList;
@@ -132,5 +134,38 @@ public class Post {
 
     public void setComments(List<Comment> comments) {
         this.comments = comments;
+    }
+
+    public boolean isAdminOrAuthor(){
+
+        if(Util.isAnonymous()){
+            return false;
+        }
+        User user = (User) Util.currentUser();
+
+
+        return user.isAdmin() || this.author.equals(user);
+    }
+
+    public boolean hasAnswered(){
+        if(Util.isAnonymous()){
+            return false;
+        }
+
+        User user = (User) Util.currentUser();
+
+
+        return this.answers.contains(user);
+    }
+
+    public boolean hasLiked(){
+        if(Util.isAnonymous()){
+            return false;
+        }
+
+        User user = (User) Util.currentUser();
+
+
+        return this.likes.contains(user);
     }
 }

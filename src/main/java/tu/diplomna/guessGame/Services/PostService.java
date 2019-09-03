@@ -3,6 +3,7 @@ package tu.diplomna.guessGame.Services;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.multipart.MultipartFile;
 import tu.diplomna.guessGame.entities.Post;
+import tu.diplomna.guessGame.models.CommentBindingModel;
 import tu.diplomna.guessGame.models.PostBindingModel;
 import tu.diplomna.guessGame.models.PostUpdateBindingModel;
 
@@ -10,15 +11,15 @@ public interface PostService {
 
     boolean createPost(PostBindingModel model, BindingResult errors, MultipartFile file);
 
-    void updatePost(PostUpdateBindingModel model, int id);
+    boolean updatePost(PostUpdateBindingModel model, int id, BindingResult errors);
 
-    void likePost(int id);
+    boolean likePost(int id);
 
-    void deletePost(int id);
+    boolean deletePost(int id);
 
-    void answerPost(int id);
+    boolean answerPost(int id);
 
-    void addComment(int id);
+    boolean addComment(int id, CommentBindingModel model, BindingResult errors);
 
     Post getPost(int id);
 }
