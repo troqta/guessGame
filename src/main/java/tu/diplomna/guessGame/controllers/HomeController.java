@@ -11,6 +11,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import tu.diplomna.guessGame.Services.PostService;
 import tu.diplomna.guessGame.Services.UserService;
 import tu.diplomna.guessGame.models.UserBindingModel;
 import tu.diplomna.guessGame.utils.Util;
@@ -27,6 +28,9 @@ public class HomeController {
     @Autowired
     private UserService userService;
 
+    @Autowired
+    private PostService postService;
+
     @GetMapping
     public String home(Model model) {
         if (!Util.isAnonymous()) {
@@ -39,6 +43,9 @@ public class HomeController {
 
             }
         }
+
+        model.addAttribute("mostLiked", postService.getAllPostsByLikes());
+        model.addAttribute("mostAnswered", postService.getAllPostsByAnswers());
 
         model.addAttribute("view", "home");
         return "base-layout";

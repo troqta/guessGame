@@ -168,4 +168,12 @@ public class Post {
 
         return this.likes.contains(user);
     }
+
+    public int getAnswersCount(){
+        return this.answers.size();
+    }
+
+    public int getLikesCount(){
+        return this.likes.size();
+    }
 }

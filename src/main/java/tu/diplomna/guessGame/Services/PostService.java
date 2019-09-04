@@ -7,19 +7,26 @@ import tu.diplomna.guessGame.models.CommentBindingModel;
 import tu.diplomna.guessGame.models.PostBindingModel;
 import tu.diplomna.guessGame.models.PostUpdateBindingModel;
 
+import java.util.List;
+
 public interface PostService {
 
     boolean createPost(PostBindingModel model, BindingResult errors, MultipartFile file);
 
     boolean updatePost(PostUpdateBindingModel model, int id, BindingResult errors);
 
-    boolean likePost(int id);
+    String likePost(int id);
 
     boolean deletePost(int id);
 
-    boolean answerPost(int id, String answer);
+    String answerPost(int id, String answer);
 
     boolean addComment(int id, CommentBindingModel model, BindingResult errors);
 
     Post getPost(int id);
+
+    List<Post> getAllPostsByLikes();
+
+    List<Post> getAllPostsByAnswers();
+
 }

@@ -18,7 +18,10 @@ import tu.diplomna.guessGame.repositories.PostRepository;
 import tu.diplomna.guessGame.repositories.UserRepository;
 import tu.diplomna.guessGame.utils.Util;
 
+import java.util.Comparator;
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class PostServiceImpl implements PostService {
@@ -91,18 +94,18 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
-    public boolean likePost(int id) {
+    public String likePost(int id) {
         if(Util.isAnonymous()){
-            return false;
+            return "ERROR: You are not logged in!";
         }
         Optional<Post> optionalPost = postRepository.findById(id);
         if(!optionalPost.isPresent()){
-            return false;
+            return "ERROR: Post doesn't exist!";
         }
         Post post = optionalPost.get();
         User user = (User) Util.currentUser();
         if(post.getLikes().contains(user) || user.getLikedPosts().contains(post)){
-            return false;
+            return "ERROR: You have already liked this post!";
         }
         post.getLikes().add(user);
         user.getLikedPosts().add(post);
@@ -110,7 +113,7 @@ public class PostServiceImpl implements PostService {
         postRepository.save(post);
         userRepository.save(user);
 
-        return true;
+        return "SUCCESS: Like successful!";
     }
 
     @Override
@@ -140,22 +143,22 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
-    public boolean answerPost(int id, String answer) {
+    public String answerPost(int id, String answer) {
         if(Util.isAnonymous()){
-            return false;
+            return "ERROR: You are not logged in!";
         }
         Optional<Post> optionalPost = postRepository.findById(id);
         if(!optionalPost.isPresent()){
-            return false;
+            return "ERROR: Post doesn't exist!";
         }
         Post post = optionalPost.get();
         User user = (User) Util.currentUser();
         if(post.getAnswers().contains(user) || user.getAnsweredPosts().contains(post)){
-            return false;
+            return "ERROR: You have already answered this post!";
         }
 
         if(!answer.equals(post.getAnswer())){
-            return false;
+            return "MISTAKE: Your answer was incorrect!";
         }
         post.getAnswers().add(user);
         user.getAnsweredPosts().add(post);
@@ -163,7 +166,7 @@ public class PostServiceImpl implements PostService {
         postRepository.save(post);
         userRepository.save(user);
 
-        return true;
+        return "SUCCESS: You have answered correctly! You gain 1 point.";
     }
 
     @Override
@@ -195,5 +198,16 @@ public class PostServiceImpl implements PostService {
 
         return post.orElse(null);
 
+    }
+
+    @Override
+    public List<Post> getAllPostsByLikes() {
+
+        return postRepository.findAll().stream().sorted(Comparator.comparing(Post::getLikesCount)).collect(Collectors.toList());
+    }
+
+    @Override
+    public List<Post> getAllPostsByAnswers() {
+        return postRepository.findAll().stream().sorted(Comparator.comparing(Post::getAnswersCount)).collect(Collectors.toList());
     }
 }
