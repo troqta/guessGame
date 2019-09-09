@@ -64,4 +64,24 @@ public class PostController {
         return "redirect:/";
     }
 
+    @GetMapping("edit/{id}")
+    public String editPostPage(@PathVariable int id, Model model){
+        if(Util.isAnonymous()){
+            return "redirect:/error/403";
+        }
+
+        Post post = postService.getPost(id);
+
+        if(post == null){
+            return "redirect:/error/404";
+        }
+        if(!postService.isAdminOrAuthor(post)){
+            return "redirect:/error/403";
+        }
+
+        model.addAttribute("post", post);
+        model.addAttribute("view", "post/edit");
+
+        return "base-layout";
+    }
 }

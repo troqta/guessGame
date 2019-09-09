@@ -29,4 +29,6 @@ public interface PostService {
 
     List<Post> getAllPostsByAnswers();
 
+    boolean isAdminOrAuthor(Post post);
+
 }

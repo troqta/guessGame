@@ -6,7 +6,9 @@ import org.springframework.social.connect.Connection;
 import org.springframework.social.connect.ConnectionSignUp;
 import org.springframework.social.facebook.api.Facebook;
 import org.springframework.stereotype.Service;
+import tu.diplomna.guessGame.entities.Role;
 import tu.diplomna.guessGame.entities.User;
+import tu.diplomna.guessGame.repositories.RoleRepository;
 import tu.diplomna.guessGame.repositories.UserRepository;
 
 import java.util.Optional;
@@ -16,6 +18,9 @@ import java.util.UUID;
 public class FacebookConnectionSignup implements ConnectionSignUp {
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    private RoleRepository roleRepository;
 
     @Autowired
     private BCryptPasswordEncoder encoder;
@@ -37,6 +42,8 @@ public class FacebookConnectionSignup implements ConnectionSignUp {
         if(repoUser.isPresent()){
             return user.getUsername();
         }
+        Role role = roleRepository.findByName("ROLE_USER");
+        user.getAuthorities().add(role);
         userRepository.save(user);
 
         return user.getUsername();

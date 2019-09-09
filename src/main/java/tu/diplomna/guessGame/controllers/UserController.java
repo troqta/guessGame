@@ -48,6 +48,30 @@ public class UserController {
         return "base-layout";
     }
 
+    @GetMapping("/profile")
+    public String profilePage(Model model){
+        if (Util.isAnonymous()) {
+            return "redirect:/error/403";
+        }
+
+        User user;
+
+        if (Util.currentUser() instanceof String) {
+            user = (User) userService.loadUserByUsername((String) Util.currentUser());
+
+        } else {
+            user = (User) Util.currentUser();
+
+        }
+
+        System.err.println(user.getAuthorities());
+        model.addAttribute("user", user);
+
+        model.addAttribute("view", "/user/profile");
+
+        return "base-layout";
+    }
+
     @PostMapping("/user/edit")
     public String editUser(@Valid UserEditBindingModel userEditBindingModel, BindingResult errors, @RequestParam("file") MultipartFile file, Model model) {
         if(Util.isAnonymous()){

@@ -53,6 +53,9 @@ public class HomeController {
 
     @GetMapping("/login")
     public String login(Model model){
+        if(!Util.isAnonymous()){
+            return "redirect:/";
+        }
 
         model.addAttribute("view", "login");
 
@@ -62,6 +65,9 @@ public class HomeController {
 
     @GetMapping("/register")
     public String registerPage(Model model){
+        if(!Util.isAnonymous()){
+            return "redirect:/";
+        }
 
         model.addAttribute("view", "register");
 

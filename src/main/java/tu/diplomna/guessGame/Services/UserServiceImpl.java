@@ -17,6 +17,7 @@ import tu.diplomna.guessGame.repositories.RoleRepository;
 import tu.diplomna.guessGame.repositories.UserRepository;
 import tu.diplomna.guessGame.utils.Util;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -87,6 +88,8 @@ public class UserServiceImpl implements UserService {
             return false;
         }
         User user = new User();
+        Role role = roleRepository.findByName("ROLE_USER");
+        user.getAuthorities().add(role);
         user.setUsername(model.getUsername());
         user.setPassword(encoder.encode(model.getPassword()));
         user.setEmail(model.getEmail());
@@ -180,5 +183,10 @@ public class UserServiceImpl implements UserService {
         userRepository.save(user);
 
         return true;
+    }
+
+    @Override
+    public List<User> getAllUsers() {
+        return userRepository.findAll();
     }
 }

@@ -7,6 +7,7 @@ import tu.diplomna.guessGame.entities.User;
 import tu.diplomna.guessGame.models.UserBindingModel;
 import tu.diplomna.guessGame.models.UserEditBindingModel;
 
+import java.util.List;
 import java.util.Optional;
 
 public interface UserService extends UserDetailsService {
@@ -17,4 +18,6 @@ public interface UserService extends UserDetailsService {
 
     boolean banUser(int id);
     boolean unbanUser(int id);
+
+    List<User> getAllUsers();
 }

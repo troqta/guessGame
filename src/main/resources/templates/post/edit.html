@@ -1,0 +1,18 @@
+<div class="container">
+    <div class="card myCard">
+
+
+        <form method="POST" class="myForm" enctype="multipart/form-data" th:action="@{/post/edit/{id} (id=${post.id})}">
+            <h3>You can only edit a post's description and answer!</h3>
+            <label for="oldImg">Current image:</label>
+
+            <img style="width:200px;" id="oldImg" th:src="${post.picture}"/>
+
+            <label for="file">New image:</label>
+            <input name="file" id="file" type="file" class="dropify" data-allowed-file-extensions="jpg png jpeg gif webp" data-height="300">
+            <div class="button-holder d-flex justify-content-center">
+                <button type="submit" class="btn btn-secondary myBtn">Edit</button>
+            </div>
+        </form>
+    </div>
+</div>

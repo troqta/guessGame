@@ -16,6 +16,7 @@ import org.springframework.social.connect.UsersConnectionRepository;
 import org.springframework.social.connect.mem.InMemoryUsersConnectionRepository;
 import org.springframework.social.connect.web.ProviderSignInController;
 import tu.diplomna.guessGame.Services.UserService;
+import tu.diplomna.guessGame.repositories.UserRepository;
 
 @Configuration
 @EnableWebSecurity
@@ -23,6 +24,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Autowired
     private ConnectionFactoryLocator connectionFactoryLocator;
+
+    @Autowired
+    private UserRepository userRepository;
 
     @Autowired
     private UsersConnectionRepository usersConnectionRepository;
@@ -75,7 +79,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         return new ProviderSignInController(
                 connectionFactoryLocator,
                 usersConnectionRepository,
-                new FacebookSignInAdapter());
+                new FacebookSignInAdapter(userRepository));
     }
 
 }

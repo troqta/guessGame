@@ -127,7 +127,7 @@ public class PostServiceImpl implements PostService {
         }
         Post post = optionalPost.get();
         User user = (User) Util.currentUser();
-        if(!post.isAdminOrAuthor()){
+        if(isAdminOrAuthor(post)){
             return false;
         }
 
@@ -209,5 +209,22 @@ public class PostServiceImpl implements PostService {
     @Override
     public List<Post> getAllPostsByAnswers() {
         return postRepository.findAll().stream().sorted(Comparator.comparing(Post::getAnswersCount)).collect(Collectors.toList());
+    }
+
+    @Override
+    public boolean isAdminOrAuthor(Post post) {
+        if(Util.isAnonymous()){
+            return false;
+        }
+        User currentUser;
+        if (Util.currentUser() instanceof String) {
+            currentUser = (User) userRepository.findByUsername((String) Util.currentUser()).get();
+
+        } else {
+            currentUser = (User) Util.currentUser();
+
+        }
+        return currentUser.isAdmin() || post.getAuthor().equals(currentUser);
+
     }
 }

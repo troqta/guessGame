@@ -136,16 +136,16 @@ public class Post {
         this.comments = comments;
     }
 
-    public boolean isAdminOrAuthor(){
-
-        if(Util.isAnonymous()){
-            return false;
-        }
-        User user = (User) Util.currentUser();
-
-
-        return user.isAdmin() || this.author.equals(user);
-    }
+//    public boolean isAdminOrAuthor(){
+//
+//        if(Util.isAnonymous()){
+//            return false;
+//        }
+//        User user = (User) Util.currentUser();
+//
+//
+//        return user.isAdmin() || this.author.equals(user);
+//    }
 
     public boolean hasAnswered(){
         if(Util.isAnonymous()){

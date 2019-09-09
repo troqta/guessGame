@@ -18,6 +18,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.social.connect.ConnectionFactoryLocator;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
+import org.thymeleaf.extras.springsecurity4.dialect.SpringSecurityDialect;
 import tu.diplomna.guessGame.custom.PathProperty;
 
 import javax.inject.Inject;
@@ -33,6 +34,12 @@ public class Config extends WebMvcConfigurerAdapter {
 
     @Autowired
     PathProperty pathProperty;
+
+
+    @Bean
+    public SpringSecurityDialect springSecurityDialect() {
+        return new SpringSecurityDialect();
+    }
 
 
     @Bean
