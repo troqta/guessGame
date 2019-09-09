@@ -1,7 +1,4 @@
-<h1>IM A BODY</h1>
-<div sec:authorize="isAuthenticated()">
-    <h1 th:text="${user}"></h1>
-</div>
+
 <div class="alignCenter">
     <div th:each="post : ${mostAnswered}" class="myPost">
         <div style="display: inline-block">

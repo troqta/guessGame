@@ -1,0 +1,31 @@
+.myPost {
+    text-align: center;
+    margin: auto;
+    margin-top: 5%;
+    margin-bottom: 5%;
+    width: auto;
+    max-width: 500px;
+    /*display:inline-block;*/
+}
+
+.myPost img {
+    box-shadow: 1px 1px 11px #470000;
+
+    width: 500px;
+}
+
+.postLink {
+    text-align: left;
+    font-weight: bold;
+    font-size: 200%;
+    color: black;
+    display: block;
+}
+
+.grayLink {
+    text-align: left;
+    font-weight: normal;
+    font-size: 120%;
+    color: gray;
+    display: block;
+}
