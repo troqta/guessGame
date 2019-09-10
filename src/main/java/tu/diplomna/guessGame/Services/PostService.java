@@ -31,4 +31,5 @@ public interface PostService {
 
     boolean isAdminOrAuthor(Post post);
 
+    void test(MultipartFile file);
 }

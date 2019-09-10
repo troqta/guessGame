@@ -227,4 +227,13 @@ public class PostServiceImpl implements PostService {
         return currentUser.isAdmin() || post.getAuthor().equals(currentUser);
 
     }
+
+    @Override
+    public void test(MultipartFile file) {
+        if (!file.isEmpty()) {
+            String filePath = storage.storeWithCustomLocation("test", file);
+            System.err.println(filePath);
+        }
+        else System.err.println("Couldn't upload file because of reasons");
+    }
 }

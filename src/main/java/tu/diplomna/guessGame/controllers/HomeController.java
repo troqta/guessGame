@@ -11,6 +11,8 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.multipart.MultipartFile;
 import tu.diplomna.guessGame.Services.PostService;
 import tu.diplomna.guessGame.Services.UserService;
 import tu.diplomna.guessGame.models.UserBindingModel;
@@ -87,5 +89,22 @@ public class HomeController {
             return "base-layout";
         }
         return "redirect:/login";
+    }
+
+    @GetMapping("/test")
+    public String testPage(Model model){
+
+        model.addAttribute("view", "test");
+
+        return "base-layout";
+    }
+
+
+    @PostMapping("/test")
+    public String test( @RequestParam("file") MultipartFile file){
+
+        postService.test(file);
+
+        return "redirect:/test";
     }
 }
