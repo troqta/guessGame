@@ -13,44 +13,118 @@ $(document).ready(function () {
         'submenu.normalIcon.path': '../css/tui_svg/icon-d.svg',
         'submenu.activeIcon.path': '../css/tui_svg/icon-c.svg',
     };
+    var instance = null;
+//    var instance = new tui.ImageEditor(document.querySelector('#tui-image-editor'), {
+//         includeUI: {
+//             loadImage: {
+//                 path: 'http://localhost:8081/upload-dir/test%2012312/n0yvpozzbed21.png',
+//                 name: 'SampleImage'
+//             },
+//             theme: blackTheme,
+//             initMenu: 'filter',
+//             menuBarPosition: 'bottom',
+//             uiSize:{
+//                width: '100%',
+//                height: '800px'
+//             }
+//         },
+//        cssMaxWidth: 700,
+//        cssMaxHeight: 500,
+//        selectionStyle: {
+//            cornerSize: 20,
+//            rotatingPointOffset: 70
+//        }
+//    });
+//
+//    $("#testButton").on('click', function(){
+//        var dataURL = instance.toDataURL()
+//        var blob = dataURItoBlob(dataURL);
+//        var fileOfBlob = new File([blob], 'file.png');
+//        let formData = new FormData();
+//        formData.append("file", fileOfBlob);
+//        fetch('/test', {method: "POST", body: formData});
+////        var input = $("<input>")
+////                       .attr("type", "file")
+////                       .attr("name", "file").val(fileOfBlob);
+////        $("#testForm").append(input)
+////        $("#testForm").submit()
+//
+//    });
 
-    var instance = new tui.ImageEditor(document.querySelector('#tui-image-editor'), {
-         includeUI: {
-             loadImage: {
-                 path: 'http://localhost:8081/upload-dir/test%2012312/n0yvpozzbed21.png',
-                 name: 'SampleImage'
+    $('#userEditPictureBtn').on('click', function(){
+        var imagePath = $('#oldImg').attr('src')
+        instance = new tui.ImageEditor(document.querySelector('#tui-image-editor'), {
+             includeUI: {
+                 loadImage: {
+                     path: imagePath,
+                     name: 'SampleImage'
+                 },
+                 theme: blackTheme,
+                 initMenu: 'filter',
+                 menuBarPosition: 'bottom',
+                 uiSize:{
+                    width: '100%',
+                    height: '800px'
+                 }
              },
-             theme: blackTheme,
-             initMenu: 'filter',
-             menuBarPosition: 'bottom',
-             uiSize:{
-                width: '100%',
-                height: '800px'
-             }
-         },
-        cssMaxWidth: 700,
-        cssMaxHeight: 500,
-        selectionStyle: {
-            cornerSize: 20,
-            rotatingPointOffset: 70
-        }
+            cssMaxWidth: 700,
+            cssMaxHeight: 500,
+            selectionStyle: {
+                cornerSize: 20,
+                rotatingPointOffset: 70
+            }
+        });
+        $('#userEditPictureBtn').css('display', 'none')
     });
 
-    $("#testButton").on('click', function(){
-        var dataURL = instance.toDataURL()
-        var blob = dataURItoBlob(dataURL);
-        var fileOfBlob = new File([blob], 'file.png');
+
+    $('#userEditSubmitBtn').on('click', function() {
         let formData = new FormData();
-        formData.append("file", fileOfBlob);
-        fetch('/test', {method: "POST", body: formData});
-//        var input = $("<input>")
-//                       .attr("type", "file")
-//                       .attr("name", "file").val(fileOfBlob);
-//        $("#testForm").append(input)
-//        $("#testForm").submit()
+        let updatedPicture = ($('#tui-image-editor').children().length > 0)
 
+        if(!$('#password').val() && !$('#email').val() && !updatedPicture){
+            M.toast({html: 'No changes made!'})
+            return;
+        }
+
+
+        if($('#password').val()){
+            if(!$('#repeatPassword').val() || !$('#oldPassword').val()){
+                M.toast({html: 'Repeat password or old password missing!'})
+                console.log($('#password').val())
+                console.log($('#repeatPassword').val())
+                console.log($('#oldPassword').val())
+                return;
+            }
+            if ($('#password').val() !== $('#repeatPassword').val()){
+                M.toast({html: 'Repeat password doesn\'t match!'})
+                return;
+            }
+            formData.append("password", $('#password').val());
+            formData.append("oldPassword", $('#oldPassword').val());
+        }
+
+        if($('#email').val()){
+            var testEmail = /^[A-Z0-9._%+-]+@([A-Z0-9-]+\.)+[A-Z]{2,4}$/i;
+
+            if(!testEmail.test($('#email').val())){
+                M.toast({html: 'Invalid email!'})
+                return;
+            }
+
+            formData.append('email', $('#email').val());
+        }
+        if(updatedPicture){
+            var dataURL = instance.toDataURL()
+            var blob = dataURItoBlob(dataURL);
+            var fileOfBlob = new File([blob], 'file.png');
+            formData.append("file", fileOfBlob);
+        }
+
+        fetch('/user/edit', {method: "POST", body: formData}).then(function(response) {
+            console.log(response)
+        });
     });
-
 
 })
 
