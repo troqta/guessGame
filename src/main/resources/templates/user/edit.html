@@ -14,11 +14,12 @@
             <label for="oldImg">Current image:</label>
 
             <img style="width:200px;" id="oldImg" th:src="${user.profilePicture}"/>
-            <div class="button-holder d-flex justify-content-center">
-                <button id="userEditPictureBtn" type="button" class="btn btn-secondary myBtn">Edit</button>
-                <div id="tui-image-editor"></div>
-            </div>
+
             <div th:unless="${user.isFBUser()}">
+                <div class="button-holder d-flex justify-content-center">
+                    <button id="userEditPictureBtn" type="button" class="btn btn-secondary myBtn">Edit</button>
+                    <div id="tui-image-editor"></div>
+                </div>
                 <div class="input-field">
                     <label for="password">New Password</label>
                     <input type="password" id="password" name="password">

@@ -20,4 +20,6 @@ public interface UserService extends UserDetailsService {
     boolean unbanUser(int id);
 
     List<User> getAllUsers();
+
+    boolean checkAvailability(String username);
 }

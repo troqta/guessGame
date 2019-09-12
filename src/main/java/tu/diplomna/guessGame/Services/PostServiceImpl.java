@@ -57,8 +57,10 @@ public class PostServiceImpl implements PostService {
         post.setAuthor(author);
         String path = storage.storeWithCustomLocation(post.getTitle(), file);
         post.setPicture(path);
-        author.getPosts().add(post);
+
         postRepository.save(post);
+
+        author.getPosts().add(post);
         userRepository.save(author);
 
         return true;

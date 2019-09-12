@@ -5,10 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.ObjectError;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import tu.diplomna.guessGame.Services.UserService;
 import tu.diplomna.guessGame.entities.User;
@@ -34,18 +31,27 @@ public class UserRestController {
         if (Util.isAnonymous()) {
             return new RestResponseModel(403, "You must be logged in");
         }
-        List<String> errorsList = new ArrayList<>();
-
-        for (ObjectError er :
-                errors.getAllErrors()) {
-            errorsList.add(er.getDefaultMessage());
-        }
 
         if (!userService.updateUser(userEditBindingModel, errors, file) || errors.hasErrors()) {
+            List<String> errorsList = new ArrayList<>();
+
+            for (ObjectError er :
+                    errors.getAllErrors()) {
+                errorsList.add(er.getDefaultMessage());
+            }
             return new RestResponseModel(400, errorsList);
         }
 
         return new RestResponseModel(200, "OK");
+    }
+
+    @PostMapping("/availabilityCheck/{username}")
+    public RestResponseModel checkUsernameAvailability(@PathVariable String username){
+        if(!userService.checkAvailability(username)){
+            return new RestResponseModel(403, "Unavailable");
+        }
+
+        return new RestResponseModel(200, "Available");
     }
 
 }

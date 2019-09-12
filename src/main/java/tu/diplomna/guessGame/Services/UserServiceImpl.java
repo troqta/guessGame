@@ -190,4 +190,12 @@ public class UserServiceImpl implements UserService {
     public List<User> getAllUsers() {
         return userRepository.findAll();
     }
+
+    @Override
+    public boolean checkAvailability(String username) {
+
+        Optional<UserDetails> user = userRepository.findByUsername(username);
+
+        return !user.isPresent();
+    }
 }

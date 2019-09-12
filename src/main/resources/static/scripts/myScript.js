@@ -147,6 +147,108 @@ $(document).ready(function () {
 //            console.log(error)
 //        })
     });
+    if($('#postCreatePageFlag').length){
+        instance = new tui.ImageEditor(document.querySelector('#tui-image-editor'), {
+                 includeUI: {
+                     loadImage: {
+                         path: '/css/default/default_post.jpg',
+                         name: 'SampleImage'
+                     },
+                     theme: blackTheme,
+                     initMenu: 'filter',
+                     menuBarPosition: 'bottom',
+                     uiSize:{
+                        width: '100%',
+                        height: '800px'
+                     }
+                 },
+                cssMaxWidth: 700,
+                cssMaxHeight: 500,
+                selectionStyle: {
+                    cornerSize: 20,
+                    rotatingPointOffset: 70
+                }
+            });
+    }
+
+    $('#gagCreateBtn').on('click', function(){
+        let formData = new FormData();
+        if(!$('#title').val()){
+            M.toast({html: 'A title is required to create a post!'})
+            return;
+        }
+        else{
+            if($('#title').val().length < 5 || $('#title').val().length > 20){
+                M.toast({html: 'The title must be between 5 and 20 symbols long!'})
+                return;
+            }
+            formData.append('title', $('#title').val());
+        }
+
+        if(!$('#answer').val()){
+            M.toast({html: 'An answer is required to create a post!'})
+            return;
+        }
+        else{
+            if($('#title').val().length < 5 || $('#title').val().length > 20){
+                M.toast({html: 'The answer must be between 5 and 20 symbols long!'})
+                return;
+            }
+            formData.append('answer', $('#answer').val());
+        }
+
+        if(!$('#description').val()){
+            formData.append('description', $('#description').val());
+        }
+        var dataURL = instance.toDataURL()
+        var blob = dataURItoBlob(dataURL);
+        var fileOfBlob = new File([blob], 'file.png');
+        formData.append("file", fileOfBlob);
+        var xhttp = new XMLHttpRequest();
+        xhttp.open('POST', '/api/post/create', true);
+        xhttp.onload = function () {
+            console.log(xhttp.responseText)
+            response = JSON.parse(xhttp.responseText)
+            console.log(response.statusCode)
+            console.log(response.body)
+
+            if(response.statusCode !== 200){
+                response.body.forEach(function(error) {
+                    $('#errors').append('<small style="color:rgba(255, 0 , 0, 0.5)">' + error + '</small>')
+                })
+            }
+            else{
+                window.location = '/'
+            }
+        }
+        xhttp.send(formData);
+
+    })
+    $('#username').change(function(){
+        let username = $('#username').val()
+        var xhttp = new XMLHttpRequest();
+                xhttp.open('POST', '/api/user/availabilityCheck/' + username, true);
+                xhttp.onload = function () {
+                    console.log(xhttp.responseText)
+                    response = JSON.parse(xhttp.responseText)
+                    console.log(response.statusCode)
+                    console.log(response.body)
+
+                    if(response.statusCode !== 200){
+                        $('#username').addClass('invalid')
+                        $('#username').removeClass('valid')
+                        M.toast({html: 'Username is unavailable!'})
+                    }
+                    else{
+                        $('#username').addClass('valid')
+                        $('#username').removeClass('invalid')
+                        M.toast({html: 'Username is available'})
+                    }
+                }
+                xhttp.send();
+
+    });
+
 
 })
 
