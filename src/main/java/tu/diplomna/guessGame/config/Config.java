@@ -1,5 +1,7 @@
 package tu.diplomna.guessGame.config;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.boot.jdbc.DataSourceBuilder;
@@ -74,5 +76,13 @@ public class Config extends WebMvcConfigurerAdapter {
 
     }
 
+
+    @Bean
+    public Gson parser() {
+        return new GsonBuilder()
+                .setPrettyPrinting()
+                .excludeFieldsWithoutExposeAnnotation()
+                .create();
+    }
 
 }

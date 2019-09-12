@@ -44,6 +44,7 @@ public class FacebookConnectionSignup implements ConnectionSignUp {
         }
         Role role = roleRepository.findByName("ROLE_USER");
         user.getAuthorities().add(role);
+        user.setFBUser(true);
         userRepository.save(user);
 
         return user.getUsername();

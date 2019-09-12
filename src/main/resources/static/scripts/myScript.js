@@ -120,10 +120,32 @@ $(document).ready(function () {
             var fileOfBlob = new File([blob], 'file.png');
             formData.append("file", fileOfBlob);
         }
+        var xhttp = new XMLHttpRequest();
+        xhttp.open('POST', '/api/user/edit/', true);
+        xhttp.onload = function () {
+            console.log(xhttp.responseText)
+            response = JSON.parse(xhttp.responseText)
+            console.log(response.statusCode)
+            console.log(response.body)
 
-        fetch('/user/edit', {method: "POST", body: formData}).then(function(response) {
-            console.log(response)
-        });
+            if(response.statusCode !== 200){
+                response.body.forEach(function(error) {
+                    $('#errors').append('<small style="color:rgba(255, 0 , 0, 0.5)">' + error + '</small>')
+                })
+            }
+            else{
+                window.location = '/user/profile'
+            }
+        }
+        xhttp.send(formData);
+
+//        fetch('/api/user/edit', {method: "POST", body: formData})
+//        .then(function(data) {
+//            console.log(data.json())
+//        })
+//        .catch(function(error){
+//            console.log(error)
+//        })
     });
 
 })

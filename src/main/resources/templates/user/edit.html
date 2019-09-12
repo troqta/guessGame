@@ -5,10 +5,11 @@
         <form method="POST" class="myForm" enctype="multipart/form-data" th:action="@{/user/edit/}">
             <h3>Edit your profile!</h3>
 
-
-            <th:block th:each="error : ${errors}">
-                <small style="color:rgba(255, 0 , 0, 0.5)" th:text="${error.getDefaultMessage()}"></small>
-            </th:block>
+            <div id="errors">
+                <th:block th:each="error : ${errors}">
+                    <small style="color:rgba(255, 0 , 0, 0.5)" th:text="${error.getDefaultMessage()}"></small>
+                </th:block>
+            </div>
 
             <label for="oldImg">Current image:</label>
 
@@ -17,19 +18,22 @@
                 <button id="userEditPictureBtn" type="button" class="btn btn-secondary myBtn">Edit</button>
                 <div id="tui-image-editor"></div>
             </div>
-            <div class="input-field">
-                <label for="password">New Password</label>
-                <input type="password" id="password" name="password">
-            </div>
+            <div th:unless="${user.isFBUser()}">
+                <div class="input-field">
+                    <label for="password">New Password</label>
+                    <input type="password" id="password" name="password">
+                </div>
 
-            <div class="input-field">
-                <label for="repeatPassword">Repeat New Password</label>
-                <input type="password" id="repeatPassword" name="repeatPassword">
-            </div>
+                <div class="input-field">
+                    <label for="repeatPassword">Repeat New Password</label>
+                    <input type="password" id="repeatPassword" name="repeatPassword">
+                </div>
 
-            <div class="input-field">
-                <label for="oldPassword">Old Password</label>
-                <input type="password" id="oldPassword" name="oldPassword">
+                <div class="input-field">
+                    <label for="oldPassword">Old Password</label>
+                    <input type="password" id="oldPassword" name="oldPassword">
+                </div>
+
             </div>
 
             <div class="input-field">

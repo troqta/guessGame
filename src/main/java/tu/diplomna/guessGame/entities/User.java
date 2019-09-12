@@ -25,6 +25,8 @@ public class User implements UserDetails {
 
     private boolean enabled;
 
+    private boolean isFBUser;
+
     @ManyToMany(fetch = FetchType.EAGER,
             cascade = {
                     CascadeType.MERGE
@@ -72,7 +74,8 @@ public class User implements UserDetails {
         answeredPosts = new HashSet<>();
         posts = new HashSet<>();
         enabled = true;
-        profilePicture = "https://s3.amazonaws.com/37assets/svn/1065-IMG_2529.jpg";
+        isFBUser = false;
+        profilePicture = "/css/default/profile_pic.jpg";
     }
 
     public User(String username, String password, String email) {
@@ -84,6 +87,7 @@ public class User implements UserDetails {
         this.answeredPosts = new HashSet<>();
         this.posts = new HashSet<>();
         this.enabled = true;
+        this.isFBUser = false;
     }
 
     @Override
@@ -198,6 +202,14 @@ public class User implements UserDetails {
                 username.equals(user.username) &&
                 password.equals(user.password) &&
                 email.equals(user.email);
+    }
+
+    public boolean isFBUser() {
+        return isFBUser;
+    }
+
+    public void setFBUser(boolean FBUser) {
+        isFBUser = FBUser;
     }
 
     @Override

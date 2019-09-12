@@ -105,7 +105,7 @@ public class UserServiceImpl implements UserService {
         }
         User user = (User) Util.currentUser();
         boolean changed = false;
-        if (!model.getPassword().isEmpty()) {
+        if (model.getPassword() != null &&!model.getPassword().isEmpty()) {
             if (!model.getOldPassword().isEmpty()) {
                 if (!encoder.matches(model.getOldPassword(), user.getPassword())) {
                     errors.addError(new ObjectError("Password", "Old password doesnt match!"));
@@ -119,13 +119,13 @@ public class UserServiceImpl implements UserService {
             }
         }
 
-        if (!file.isEmpty()) {
+        if (file != null && !file.isEmpty()) {
             String filePath = storage.storeWithCustomLocation(user.getUsername(), file, user.getProfilePicture().substring(user.getProfilePicture().lastIndexOf("/")));
             user.setProfilePicture(filePath);
             changed = true;
         }
 
-        if (!model.getEmail().isEmpty()){
+        if (model.getEmail() != null && !model.getEmail().isEmpty()){
             user.setEmail(model.getEmail());
             changed = true;
         }
@@ -133,7 +133,8 @@ public class UserServiceImpl implements UserService {
         if(changed){
             userRepository.save(user);
         }
-
+        System.err.println(model.toString());
+        System.err.println(changed);
         return changed;
     }
 
