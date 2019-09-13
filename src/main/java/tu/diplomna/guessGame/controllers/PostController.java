@@ -7,7 +7,9 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import tu.diplomna.guessGame.Services.PostService;
+import tu.diplomna.guessGame.Services.UserService;
 import tu.diplomna.guessGame.entities.Post;
+import tu.diplomna.guessGame.entities.User;
 import tu.diplomna.guessGame.models.PostBindingModel;
 import tu.diplomna.guessGame.utils.Util;
 
@@ -19,9 +21,12 @@ public class PostController {
 
     private PostService postService;
 
+    private UserService userService;
+
     @Autowired
-    public PostController(PostService postService) {
+    public PostController(PostService postService, UserService userService) {
         this.postService = postService;
+        this.userService = userService;
     }
 
     @GetMapping("/{id}")
@@ -31,8 +36,18 @@ public class PostController {
         if (post == null) {
             return "redirect:/error/404";
         }
+        User user;
+
+        if (Util.currentUser() instanceof String) {
+            user = (User) userService.loadUserByUsername((String) Util.currentUser());
+
+        } else {
+            user = (User) Util.currentUser();
+
+        }
 
         model.addAttribute("post", post);
+        model.addAttribute("user", user);
         model.addAttribute("view", "post/details");
 
 

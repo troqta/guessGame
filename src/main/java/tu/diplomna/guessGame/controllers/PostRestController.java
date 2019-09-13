@@ -7,6 +7,7 @@ import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import tu.diplomna.guessGame.Services.PostService;
+import tu.diplomna.guessGame.models.CommentBindingModel;
 import tu.diplomna.guessGame.models.PostBindingModel;
 import tu.diplomna.guessGame.models.RestResponseModel;
 import tu.diplomna.guessGame.utils.Util;
@@ -44,7 +45,7 @@ public class PostRestController {
         if (Util.isAnonymous()) {
             return new RestResponseModel(403, "Access denied!");
         }
-        if(!postService.createPost(postBindingModel, errors, file) || errors.hasErrors()){
+        if (!postService.createPost(postBindingModel, errors, file) || errors.hasErrors()) {
             List<String> errorsList = new ArrayList<>();
 
             for (ObjectError er :
@@ -55,4 +56,23 @@ public class PostRestController {
         }
         return new RestResponseModel(200, "ОК");
     }
+
+    @PostMapping("/comment/{id}")
+    public RestResponseModel commentPost(@Valid CommentBindingModel model, BindingResult errors, @PathVariable int id) {
+        if (Util.isAnonymous()) {
+            return new RestResponseModel(403, "You must be logged in to comment!");
+        }
+        if (!postService.addComment(id, model, errors)) {
+            List<String> errorsList = new ArrayList<>();
+            for (ObjectError error :
+                    errors.getAllErrors()) {
+                errorsList.add(error.getDefaultMessage());
+
+            }
+            return new RestResponseModel(400, errorsList);
+        }
+
+        return new RestResponseModel(200, "OK");
+    }
+
 }

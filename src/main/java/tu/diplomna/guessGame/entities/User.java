@@ -231,6 +231,11 @@ public class User implements UserDetails {
                 .anyMatch(authority -> authority.getAuthority().equals("ROLE_OWNER"));
     }
 
+    @Transient
+    public boolean isAuthor(Post post) {
+        return this.id == post.getAuthor().getId();
+    }
+
     @Override
     public String toString() {
         return "User{" +
