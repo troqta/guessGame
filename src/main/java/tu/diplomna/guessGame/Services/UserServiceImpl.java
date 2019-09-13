@@ -1,5 +1,6 @@
 package tu.diplomna.guessGame.Services;
 
+import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -31,20 +32,25 @@ public class UserServiceImpl implements UserService {
 
     private Storage storage;
 
+    private Logger logger;
+
     @Autowired
-    public UserServiceImpl(RoleRepository roleRepository, UserRepository userRepository, BCryptPasswordEncoder encoder, Storage storage) {
+    public UserServiceImpl(RoleRepository roleRepository, UserRepository userRepository, BCryptPasswordEncoder encoder, Storage storage, Logger logger) {
         this.roleRepository = roleRepository;
         this.userRepository = userRepository;
         this.encoder = encoder;
         this.storage = storage;
+        this.logger = logger;
 
         initialRoleAndAdminSetup();
     }
 
     private void initialRoleAndAdminSetup() {
-        if (roleRepository.findAll().size() < 2) {
+        if (roleRepository.findAll().size() < 3) {
             roleRepository.save(new Role("ROLE_USER"));
             roleRepository.save(new Role("ROLE_ADMIN"));
+            roleRepository.save(new Role("ROLE_OWNER"));
+            logger.info("Saved roles to DB");
         }
 
         Optional optionalUser = userRepository.findByUsername("admin");
@@ -52,13 +58,32 @@ public class UserServiceImpl implements UserService {
             User user = new User("admin", encoder.encode("admin"), "nomail@mail.com");
 
             Role adminRole = roleRepository.findByName("ROLE_ADMIN");
+            Role userRole = roleRepository.findByName("ROLE_USER");
 
             user.getAuthorities().add(adminRole);
+            user.getAuthorities().add(userRole);
 
-            System.err.println(adminRole.toString());
-            System.err.println(user.toString());
 
             userRepository.save(user);
+
+            logger.info("Saved initial admin user to DB", user);
+        }
+
+        optionalUser = userRepository.findByUsername("owner");
+        if (!optionalUser.isPresent()) {
+            User user = new User("owner", encoder.encode("owner"), "nomail@mail.com");
+
+            Role adminRole = roleRepository.findByName("ROLE_ADMIN");
+            Role ownerRole = roleRepository.findByName("ROLE_OWNER");
+            Role userRole = roleRepository.findByName("ROLE_USER");
+
+            user.getAuthorities().add(adminRole);
+            user.getAuthorities().add(ownerRole);
+            user.getAuthorities().add(userRole);
+
+            userRepository.save(user);
+
+            logger.info("Saved initial owner user to DB", user);
         }
     }
 
@@ -69,6 +94,7 @@ public class UserServiceImpl implements UserService {
             return optional.get();
 
         }
+        logger.error("User with username " + s + " not found!");
         throw new UsernameNotFoundException("User with username " + s + " not found!");
 
     }
@@ -95,6 +121,7 @@ public class UserServiceImpl implements UserService {
         user.setEmail(model.getEmail());
 
         userRepository.save(user);
+        logger.info("Registered user ", user);
         return true;
     }
 
@@ -133,8 +160,6 @@ public class UserServiceImpl implements UserService {
         if(changed){
             userRepository.save(user);
         }
-        System.err.println(model.toString());
-        System.err.println(changed);
         return changed;
     }
 
@@ -155,9 +180,18 @@ public class UserServiceImpl implements UserService {
         }
         User user = optionalUser.get();
 
+        Role adminRole = roleRepository.findByName("ROLE_ADMIN");
+
+        if(user.getAuthorities().contains(adminRole) && !currentUser.isOwner()){
+            return false;
+        }
+
+
         user.setEnabled(false);
 
         userRepository.save(user);
+
+        logger.info("Admin " + currentUser.getUsername() + " banned user " + user.getUsername());
 
         return true;
     }
@@ -179,9 +213,18 @@ public class UserServiceImpl implements UserService {
         }
         User user = optionalUser.get();
 
+        Role adminRole = roleRepository.findByName("ROLE_ADMIN");
+
+        if(user.getAuthorities().contains(adminRole) && !currentUser.isOwner()){
+            return false;
+        }
+
         user.setEnabled(true);
 
         userRepository.save(user);
+
+        logger.info("Admin " + currentUser.getUsername() + " unbanned user " + user.getUsername());
+
 
         return true;
     }
@@ -197,5 +240,126 @@ public class UserServiceImpl implements UserService {
         Optional<UserDetails> user = userRepository.findByUsername(username);
 
         return !user.isPresent();
+    }
+
+    @Override
+    public boolean makeAdmin(int id) {
+        if(Util.isAnonymous()){
+            return false;
+        }
+
+        User currentUser;
+        if (Util.currentUser() instanceof String) {
+            currentUser = (User) userRepository.findByUsername((String) Util.currentUser()).get();
+
+        } else {
+            currentUser = (User) Util.currentUser();
+
+        }
+        if(!currentUser.isOwner()){
+            return false;
+        }
+        Optional<User> optionalUser = userRepository.findById(id);
+
+        if(!optionalUser.isPresent()){
+            return false;
+        }
+
+        User user = optionalUser.get();
+
+        Role adminRole = roleRepository.findByName("ROLE_ADMIN");
+
+        if(user.getAuthorities().contains(adminRole)){
+            return false;
+        }
+        user.getAuthorities().add(adminRole);
+
+        userRepository.save(user);
+
+        return true;
+    }
+
+    @Override
+    public boolean removeAdmin(int id) {
+        if(Util.isAnonymous()){
+            return false;
+        }
+
+        User currentUser;
+        if (Util.currentUser() instanceof String) {
+            currentUser = (User) userRepository.findByUsername((String) Util.currentUser()).get();
+
+        } else {
+            currentUser = (User) Util.currentUser();
+
+        }
+        if(!currentUser.isOwner()){
+            return false;
+        }
+        Optional<User> optionalUser = userRepository.findById(id);
+
+        if(!optionalUser.isPresent()){
+            return false;
+        }
+
+        User user = optionalUser.get();
+
+        Role adminRole = roleRepository.findByName("ROLE_ADMIN");
+
+        if(!user.getAuthorities().contains(adminRole)){
+            return false;
+        }
+        user.getAuthorities().remove(adminRole);
+
+        userRepository.save(user);
+
+        return true;
+    }
+
+    @Override
+    public boolean giveOwner(int id) {
+        if(Util.isAnonymous()){
+            return false;
+        }
+
+        User currentUser;
+        if (Util.currentUser() instanceof String) {
+            currentUser = (User) userRepository.findByUsername((String) Util.currentUser()).get();
+
+        } else {
+            currentUser = (User) Util.currentUser();
+
+        }
+        if(!currentUser.isOwner()){
+            return false;
+        }
+        Optional<User> optionalUser = userRepository.findById(id);
+
+        if(!optionalUser.isPresent()){
+            return false;
+        }
+
+        User user = optionalUser.get();
+
+        Role adminRole = roleRepository.findByName("ROLE_ADMIN");
+        Role ownerRole = roleRepository.findByName("ROLE_OWNER");
+        Role userRole = roleRepository.findByName("ROLE_USER");
+
+        if(user.getAuthorities().contains(ownerRole)){
+            return false;
+        }
+        user.getAuthorities().add(adminRole);
+        user.getAuthorities().add(ownerRole);
+
+        userRepository.save(user);
+
+        currentUser = userRepository.findById(currentUser.getId()).get();
+
+
+        currentUser.getAuthorities().remove(ownerRole);
+
+        userRepository.save(currentUser);
+
+        return true;
     }
 }

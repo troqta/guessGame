@@ -1,6 +1,7 @@
 package tu.diplomna.guessGame.Services;
 
 import javafx.geometry.Pos;
+import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.BindingResult;
@@ -30,13 +31,15 @@ public class PostServiceImpl implements PostService {
     private Storage storage;
     private UserRepository userRepository;
     private CommentRepository commentRepository;
+    private Logger logger;
 
     @Autowired
-    public PostServiceImpl(PostRepository postRepository, Storage storage, UserRepository userRepository, CommentRepository commentRepository) {
+    public PostServiceImpl(PostRepository postRepository, Storage storage, UserRepository userRepository, CommentRepository commentRepository, Logger logger) {
         this.postRepository = postRepository;
         this.storage = storage;
         this.userRepository = userRepository;
         this.commentRepository = commentRepository;
+        this.logger = logger;
     }
 
     @Override
@@ -62,6 +65,8 @@ public class PostServiceImpl implements PostService {
 
         author.getPosts().add(post);
         userRepository.save(author);
+
+        logger.info("User " + author.getUsername() + " created post with id " + post.getId());
 
         return true;
     }
@@ -139,6 +144,9 @@ public class PostServiceImpl implements PostService {
 
         postRepository.delete(post);
         userRepository.save(user);
+
+        logger.info("User " + user.getUsername() + "deleted post with id " + post.getId());
+
 
         return true;
 

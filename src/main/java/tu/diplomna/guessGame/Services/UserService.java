@@ -22,4 +22,10 @@ public interface UserService extends UserDetailsService {
     List<User> getAllUsers();
 
     boolean checkAvailability(String username);
+
+    boolean makeAdmin(int id);
+
+    boolean removeAdmin(int id);
+
+    boolean giveOwner(int id);
 }

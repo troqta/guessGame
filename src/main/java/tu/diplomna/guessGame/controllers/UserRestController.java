@@ -54,4 +54,67 @@ public class UserRestController {
         return new RestResponseModel(200, "Available");
     }
 
+    @PostMapping("/makeAdmin/{id}")
+    public RestResponseModel makeAdmin(@PathVariable int id){
+        if(Util.isAnonymous()){
+            return new RestResponseModel(403, "Access denied!");
+        }
+        if(!userService.makeAdmin(id)){
+            return new RestResponseModel(403, "User is already admin or you are not the owner!");
+        }
+
+        return new RestResponseModel(200, "OK");
+    }
+
+
+
+    @PostMapping("/removeAdmin/{id}")
+    public RestResponseModel removeAdmin(@PathVariable int id){
+        if(Util.isAnonymous()){
+            return new RestResponseModel(403, "Access denied!");
+        }
+        if(!userService.removeAdmin(id)){
+            return new RestResponseModel(403, "User is not an admin or you are not the owner!");
+        }
+
+        return new RestResponseModel(200, "OK");
+    }
+
+
+    @PostMapping("/giveOwner/{id}")
+    public RestResponseModel giveOwner(@PathVariable int id){
+        if(Util.isAnonymous()){
+            return new RestResponseModel(403, "Access denied!");
+        }
+        if(!userService.giveOwner(id)){
+            return new RestResponseModel(403, "You are not the owner!");
+        }
+
+        return new RestResponseModel(200, "OK");
+    }
+
+
+    @PostMapping("/ban/{id}")
+    public RestResponseModel ban(@PathVariable int id){
+        if(Util.isAnonymous()){
+            return new RestResponseModel(403, "Access denied!");
+        }
+        if(!userService.banUser(id)){
+            return new RestResponseModel(403, "Ban failed!");
+        }
+
+        return new RestResponseModel(200, "OK");
+    }
+
+    @PostMapping("/unBan/{id}")
+    public RestResponseModel unBan(@PathVariable int id){
+        if(Util.isAnonymous()){
+            return new RestResponseModel(403, "Access denied!");
+        }
+        if(!userService.unbanUser(id)){
+            return new RestResponseModel(403, "Unban failed!");
+        }
+
+        return new RestResponseModel(200, "OK");
+    }
 }

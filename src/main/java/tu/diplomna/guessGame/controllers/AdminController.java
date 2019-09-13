@@ -37,6 +37,7 @@ public class AdminController {
         }
 
         model.addAttribute("view", "admin/users");
+        model.addAttribute("currentUser", currentUser);
         model.addAttribute("users", userService.getAllUsers());
         return "base-layout";
     }

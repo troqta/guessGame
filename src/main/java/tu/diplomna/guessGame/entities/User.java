@@ -224,6 +224,13 @@ public class User implements UserDetails {
                 .anyMatch(authority -> authority.getAuthority().equals("ROLE_ADMIN"));
     }
 
+    @Transient
+    public boolean isOwner() {
+        return this.getAuthorities()
+                .stream()
+                .anyMatch(authority -> authority.getAuthority().equals("ROLE_OWNER"));
+    }
+
     @Override
     public String toString() {
         return "User{" +

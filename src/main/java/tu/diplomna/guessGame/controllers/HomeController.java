@@ -1,5 +1,7 @@
 package tu.diplomna.guessGame.controllers;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.social.connect.Connection;
@@ -32,6 +34,9 @@ public class HomeController {
 
     @Autowired
     private PostService postService;
+
+    @Autowired
+    private Logger logger;
 
     @GetMapping
     public String home(Model model) {

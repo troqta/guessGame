@@ -224,30 +224,176 @@ $(document).ready(function () {
         xhttp.send(formData);
 
     })
-    $('#username').change(function(){
-        let username = $('#username').val()
-        var xhttp = new XMLHttpRequest();
-                xhttp.open('POST', '/api/user/availabilityCheck/' + username, true);
-                xhttp.onload = function () {
-                    console.log(xhttp.responseText)
-                    response = JSON.parse(xhttp.responseText)
-                    console.log(response.statusCode)
-                    console.log(response.body)
+    if($('#registerForm').length){
+        $('#username').change(function(){
+            let username = $('#username').val()
+            var xhttp = new XMLHttpRequest();
+                    xhttp.open('POST', '/api/user/availabilityCheck/' + username, true);
+                    xhttp.onload = function () {
+                        console.log(xhttp.responseText)
+                        response = JSON.parse(xhttp.responseText)
+                        console.log(response.statusCode)
+                        console.log(response.body)
 
-                    if(response.statusCode !== 200){
-                        $('#username').addClass('invalid')
-                        $('#username').removeClass('valid')
-                        M.toast({html: 'Username is unavailable!'})
+                        if(response.statusCode !== 200){
+                            $('#username').addClass('invalid')
+                            $('#username').removeClass('valid')
+                            M.toast({html: 'Username is unavailable!'})
+                        }
+                        else{
+                            $('#username').addClass('valid')
+                            $('#username').removeClass('invalid')
+                            M.toast({html: 'Username is available'})
+                        }
+                    }
+                    xhttp.send();
+
+        });
+    }
+        $('.myBanClass').on('click', banFunction);
+        $('.myUnbanClass').on('click', unbanFunction);
+        $('.myMakeAdminClass').on('click', makeAdminFunction);
+        $('.myRemoveAdminClass').on('click', removeAdminFunction);
+        var button;
+
+        function banFunction() {
+            button = $(this);
+            $item = $(this).closest("tr")
+                .find(".id")
+            itemText = $item.text();
+            $('#userPlaceholder').html("Are you sure you wish to ban user with id " + itemText);
+            $('#confirmButton').on('click', function () {
+                var xhttp = new XMLHttpRequest();
+                xhttp.open("POST", "/api/user/ban/" + $item.text(), true);
+                xhttp.onload = function () {
+                    if (JSON.parse(xhttp.responseText).statusCode === 200) {
+                        M.toast({html: "Ban successful!"})
+                        $item.parent().css('background-color', 'rgba(255, 0, 0, 0.5)');
+
+                        button.prop("onclick", null).off("click");
+                        button.html('UNBAN');
+                        button.on('click', unbanFunction);
                     }
                     else{
-                        $('#username').addClass('valid')
-                        $('#username').removeClass('invalid')
-                        M.toast({html: 'Username is available'})
+                        M.toast({html: JSON.parse(xhttp.responseText).body})
                     }
                 }
+                $('#confirmButton').prop("onclick", null).off("click");
                 xhttp.send();
+            });
+            $('.modal').modal();
+        };
 
-    });
+        function unbanFunction() {
+            button = $(this);
+            $item = $(this).closest("tr")
+                .find(".id")
+            itemText = $item.text();
+            $('#userPlaceholder').html("Are you sure you wish to unban user with id" + itemText);
+            $('#confirmButton').on('click', function () {
+                var xhttp = new XMLHttpRequest();
+                xhttp.open("POST", "/api/user/unBan/" + $item.text(), true);
+                var flag = false;
+                xhttp.onload = function () {
+
+                    if (JSON.parse(xhttp.responseText).statusCode === 200) {
+                        M.toast({html: "Unban successful"})
+                        $item.parent().css('background-color', 'rgba(0, 255, 0, 0.5)');
+                        button.prop("onclick", null).off("click");
+                        button.html('BAN');
+                        button.on('click', banFunction);
+                    }
+                    else{
+                        M.toast({html: JSON.parse(xhttp.responseText).body})
+                    }
+                }
+                $('#confirmButton').prop("onclick", null).off("click");
+                xhttp.send();
+            });
+
+            $('.modal').modal();
+        };
+        function makeAdminFunction() {
+            button = $(this);
+            $item = $(this).closest("tr")
+                .find(".id")
+            itemText = $item.text();
+            $('#userPlaceholder').html("Are you sure you wish to give admin rights to user with id " + itemText);
+            $('#confirmButton').on('click', function () {
+                var xhttp = new XMLHttpRequest();
+                xhttp.open("POST", "/api/user/makeAdmin/" + $item.text(), true);
+                xhttp.onload = function () {
+                    if (JSON.parse(xhttp.responseText).statusCode === 200) {
+                        M.toast({html: "User is now an admin!"})
+
+                        button.prop("onclick", null).off("click");
+                        button.html('Remove Admin');
+                        button.on('click', removeAdminFunction);
+                    }
+                    else{
+                        M.toast({html: JSON.parse(xhttp.responseText).body})
+                    }
+                }
+                $('#confirmButton').prop("onclick", null).off("click");
+                xhttp.send();
+            });
+            $('.modal').modal();
+        };
+
+        function removeAdminFunction() {
+            button = $(this);
+            $item = $(this).closest("tr")
+                .find(".id")
+            itemText = $item.text();
+            $('#userPlaceholder').html("Are you sure you wish to retract admin rights from user with id" + itemText);
+            $('#confirmButton').on('click', function () {
+                var xhttp = new XMLHttpRequest();
+                xhttp.open("POST", "/api/user/removeAdmin/" + $item.text(), true);
+                var flag = false;
+                xhttp.onload = function () {
+
+                    if (JSON.parse(xhttp.responseText).statusCode === 200) {
+                        M.toast({html: "User is no longer an admin"})
+                        button.prop("onclick", null).off("click");
+                        button.html('Make Admin');
+                        button.on('click', makeAdminFunction);
+                    }
+                    else{
+                        M.toast({html: JSON.parse(xhttp.responseText).body})
+                    }
+                }
+                $('#confirmButton').prop("onclick", null).off("click");
+                xhttp.send();
+            });
+
+            $('.modal').modal();
+        };
+        $('.makeOwnerButton').on('click', function() {
+            button = $(this);
+            $item = $(this).closest("tr")
+                .find(".id")
+            itemText = $item.text();
+            $('#userPlaceholder').html("Are you sure you wish to give up your owner rights and hand them over to user with id " + itemText);
+            $('#confirmButton').on('click', function () {
+                var xhttp = new XMLHttpRequest();
+                xhttp.open("POST", "/api/user/giveOwner/" + $item.text(), true);
+                var flag = false;
+                xhttp.onload = function () {
+
+                    if (JSON.parse(xhttp.responseText).statusCode === 200) {
+                        window.location = "/logout"
+                    }
+                    else{
+                        M.toast({html: JSON.parse(xhttp.responseText).body})
+                    }
+                }
+                $('#confirmButton').prop("onclick", null).off("click");
+                xhttp.send();
+            });
+
+            $('.modal').modal();
+
+        });
 
 
 })

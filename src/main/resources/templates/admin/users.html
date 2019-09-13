@@ -3,9 +3,11 @@
         <table class="highlight responsive-table">
             <thead>
             <tr>
+                <th>id</th>
                 <th>UserName</th>
                 <th>Posts</th>
-                <!--<th>Comments</th>-->
+                <th th:if="${currentUser.isOwner()}">Admin</th>
+                <th th:if="${currentUser.isOwner()}">Owner</th>
                 <th>Ban</th>
             </tr>
             </thead>
@@ -13,9 +15,31 @@
             <tbody>
             <tr th:each="user : ${users}"
                 th:style="${!user.isEnabled()} ? 'background-color:rgba(255, 0, 0 , 0.5)' : 'background-color:rgba(0, 255, 0 , 0.5)'">
+                <td class="id" th:text="${user.id}">Id</td>
                 <td class="username" th:text="${user.username}">username</td>
                 <td th:text="${user.posts.size()}">posts</td>
-                <!--<td th:text="${user.comments.size()}">comments</td>-->
+
+                <td th:if="${currentUser.isOwner()}">
+                    <th:block th:if="${user.isAdmin()}">
+                        <button data-target="modal1" class="btn modal-trigger myRemoveAdminClass findMe">Remove Admin
+                        </button>
+                    </th:block>
+                    <th:block th:unless="${user.isAdmin()}">
+                        <button data-target="modal1" class="btn modal-trigger myMakeAdminClass findMe">Make Admin
+                        </button>
+                    </th:block>
+                </td>
+                <td th:if="${currentUser.isOwner()}">
+
+                    <th:block th:if="${user.isOwner()}">
+                        <button data-target="modal1" class="btn modal-trigger disabled findMe">Make Owner</button>
+                    </th:block>
+                    <th:block th:unless="${user.isOwner()}">
+                        <button data-target="modal1" class="btn makeOwnerButton modal-trigger findMe">Make Owner
+                        </button>
+                    </th:block>
+
+                </td>
                 <td>
                     <th:block th:if="${user.isEnabled()}">
                         <button data-target="modal1" class="btn modal-trigger myBanClass findMe">BAN</button>
