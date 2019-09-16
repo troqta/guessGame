@@ -1,5 +1,6 @@
 package tu.diplomna.guessGame.controllers;
 
+import com.sun.org.apache.xpath.internal.operations.Mod;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -10,6 +11,7 @@ import tu.diplomna.guessGame.Services.PostService;
 import tu.diplomna.guessGame.Services.UserService;
 import tu.diplomna.guessGame.entities.Post;
 import tu.diplomna.guessGame.entities.User;
+import tu.diplomna.guessGame.models.CommentBindingModel;
 import tu.diplomna.guessGame.models.PostBindingModel;
 import tu.diplomna.guessGame.utils.Util;
 
@@ -98,5 +100,16 @@ public class PostController {
         model.addAttribute("view", "post/edit");
 
         return "base-layout";
+    }
+
+    @PostMapping("/comment/{id}")
+    public String comment(@Valid CommentBindingModel commentBindingModel, BindingResult errors, @PathVariable int id, Model model){
+        if(!postService.addComment(1, commentBindingModel, errors) || errors.hasErrors()){
+            model.addAttribute("errors", errors.getAllErrors());
+            model.addAttribute("view", "post/create");
+
+            return "base-layout";
+        }
+        return "redirect:/post/" + id;
     }
 }

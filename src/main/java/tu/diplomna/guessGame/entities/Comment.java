@@ -1,9 +1,7 @@
 package tu.diplomna.guessGame.entities;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
+import java.sql.Timestamp;
 
 @Entity
 public class Comment {
@@ -14,11 +12,15 @@ public class Comment {
 
     private String content;
 
+    @ManyToOne
     private User author;
 
-    public Comment(){
+    private Timestamp postDate;
 
+    public Comment(){
+        postDate = new Timestamp(System.currentTimeMillis());
     }
+
 
     public int getId() {
         return id;
@@ -42,5 +44,13 @@ public class Comment {
 
     public void setAuthor(User author) {
         this.author = author;
+    }
+
+    public Timestamp getPostDate() {
+        return postDate;
+    }
+
+    public void setPostDate(Timestamp postDate) {
+        this.postDate = postDate;
     }
 }

@@ -2,6 +2,10 @@ $(document).ready(function() {
     $("#sidenavBtn").on('click', function() {
         $('.sidenav').sidenav();
     });
+    $('.dropdown-trigger').dropdown();
+    $('.dropify').dropify();
+    $('.tooltipped').tooltip();
+    $('#tabs').tabs();
 
     const blackTheme = {
         // main icons

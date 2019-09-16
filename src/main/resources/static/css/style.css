@@ -1,3 +1,24 @@
+body {
+    display: flex;
+    min-height: 100vh;
+    flex-direction: column;
+}
+
+main {
+    flex: 1 0 auto;
+    margin-top: 12%;
+}
+
+.custom-margin1 {
+    margin-left: 10%;
+    margin-right: 10%;
+}
+
+.alignCenter {
+    text-align: center;
+    padding: 0 20%;
+}
+
 .myPost {
     text-align: center;
     margin: auto;
@@ -22,10 +43,91 @@
     display: block;
 }
 
+.myCenter {
+    width: 100%;
+    text-align: center;
+    margin-bottom: 5%;
+}
+
+.inline {
+    display: inline-block;
+}
+
+.site-nav.is-hidden {
+    transform: translateY(-100%);
+}
+
+.site-nav.is-visible {
+    transform: translateY(0);
+}
+
+.site-nav {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 10;
+    transition: transform 0.25s;
+}
+
 .grayLink {
     text-align: left;
     font-weight: normal;
     font-size: 120%;
     color: gray;
     display: block;
+}
+
+.myCard {
+    padding: 5%;
+
+}
+
+.bot-margin {
+    margin-bottom: 30px;
+}
+
+.myForm {
+    display: flex;
+    flex-direction: column;
+}
+
+.myBtn {
+    float: right;
+    margin-top: 10px;
+}
+
+.myCard2 {
+    padding: 2%;
+
+}
+
+.wmx {
+    flex-direction: column;
+    margin: auto;
+    margin-top: 20px;
+}
+.card{
+    margin:auto;
+    margin-bottom: 5%;
+}
+.inline-block{
+    display: inline-block;
+}
+.myCard4{
+    width:auto;
+}
+.myTab{
+    width: 49.6%;
+}
+.myLi{
+    display: flex;
+    align-items: center;
+}
+.myTransparentBtn{
+    background-color: transparent;
+}
+ a{
+    color: inherit;
+    text-decoration: none;
 }

@@ -53,7 +53,7 @@ public class Post {
     )
     private Set<User> answers;
 
-    @OneToMany(cascade = CascadeType.ALL)
+    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     private List<Comment> comments;
 
 

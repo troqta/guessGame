@@ -16,9 +16,11 @@
             <img style="width:200px;" id="oldImg" th:src="${user.profilePicture}"/>
 
             <div th:unless="${user.isFBUser()}">
-                <div class="button-holder d-flex justify-content-center">
-                    <button id="userEditPictureBtn" type="button" class="btn btn-secondary myBtn">Edit</button>
-                    <div id="tui-image-editor"></div>
+                <div style="min-height: 50px">
+                    <div class="button-holder justify-content-center">
+                        <button id="userEditPictureBtn" type="button" class="btn btn-secondary myBtn">Edit</button>
+                        <div id="tui-image-editor"></div>
+                    </div>
                 </div>
                 <div class="input-field">
                     <label for="password">New Password</label>

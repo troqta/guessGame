@@ -1,7 +1,7 @@
 <div class="alignCenter">
-    <div class="myGag">
+    <div class="myPost">
         <div style="display: inline-block">
-            <a class="postLink" th:href="@{/post/{id}(id=${post.id})}" th:text="${post.title}">gag</a>
+            <a class="postLink" th:href="@{/post/{id}(id=${post.id})}" th:text="${post.title}">post</a>
             <div class="inline">
                 <img class="materialboxed" th:src="${post.picture}">
             </div>
@@ -29,7 +29,7 @@
     <li><a href="javascript:{}" onclick="document.getElementById('deleteForm').submit();">DELETE</a></li>
 </ul>
 <form sec:authorize="isAuthenticated()" th:if="${user.isAdmin() OR user.isAuthor(post)}" id="deleteForm"
-      th:action="@{/gag/delete/{id} (id=${gag.id})}" method="POST"></form>
+      th:action="@{/post/delete/{id} (id=${post.id})}" method="POST"></form>
 <div class="container">
     <div class="card myCard2">
         <p th:text="|${post.comments.size()} comments|"></p>
@@ -41,7 +41,7 @@
                 <div class="input-field wmx">
                     <label for="content">Post a Comment!</label>
                     <textarea class="materialize-textarea commentContent" id="content" name="content"></textarea>
-                    <button style="float:right; width:60px;" id="submitComment" type="button"
+                    <button style="float:right; width:60px;" id="submitComment" type="submit"
                             class="waves-effect waves-light btn green accent-4"><i
                             class="material-icons">comment</i>
                     </button>
